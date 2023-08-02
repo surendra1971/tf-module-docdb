@@ -7,7 +7,6 @@ resource "aws_docdb_cluster" "docdb" {
   vpc_security_group_ids   = [aws_security_group.allows_docdb.id]
   db_subnet_group_name     = aws_docdb_subnet_group.docdb_subnet_group.name
 
-
 #   backup_retention_period = 14
 #   preferred_backup_window = "02:00-05:00"
 }
@@ -24,10 +23,10 @@ resource "aws_docdb_subnet_group" "docdb_subnet_group" {
 
 # Creates Compute Machines needed for DocumentDB and these has to be attached to the cluster
 resource "aws_docdb_cluster_instance" "cluster_instances" {
-  count              = 1
+  count              = var.DOCDB_INSTANCE_COUNT
   identifier         = "roboshop-${var.ENV}-docdb-instance"
   cluster_identifier = aws_docdb_cluster.docdb.id                      #This argument attaches the nodes created here to the docdb cluster.
-  instance_class     = "db.t3.medium"
+  instance_class     = var.DOCDB_INSTANCE_TYPE
 
   depends_on = [aws_docdb_cluster.docdb]
 }
